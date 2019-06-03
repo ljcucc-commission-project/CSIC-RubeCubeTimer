@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Dashboard</title>
+
+  <!-- Vue.js -->
+  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+
+  <!-- Socket.io -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+
+  <!-- Material Design Lite -->
+  <link rel="stylesheet" href="./assets/cdn/material-icon.css">
+  <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+  <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+
+  <!-- Note Sans Font -->
+  <!-- <link href="https://fonts.googleapis.com/css?family=Noto+Sans+TC" rel="stylesheet"> -->
+
+  <style>
+    .demo-layout-transparent {
+      background: white;
+    }
+    .demo-layout-transparent .mdl-layout__header,
+    .demo-layout-transparent .mdl-layout__drawer-button {
+      /* This background is dark, so we set text to white. Use 87% black instead if
+        your background is light. */
+      color: white;
+    }
+
+    .black-font{
+      color:black;
+    }
+
+    .tc-font{
+      font-family: 'Noto Sans TC', sans-serif;
+    }
+
+    .mdl-layout__drawer-button > i{
+      color:black;
+    }
+
+    .portfolio-max-width{
+      margin:auto;
+    }
+
+    .md2-card{
+      border-radius:10px;
+      border-collapse:unset;
+    }
+
+    .md2-card-table{
+      border-radius:10px;
+    } #timerHeader{ 
+      padding-top: 100px;
+    }
+  </style>
+</head>
+<body>
+   <!-- Uses a transparent header that draws on top of the layout's background -->
+  
+  
+  <div class="demo-layout-transparent mdl-layout mdl-js-layout">
+    <header class="mdl-layout__header mdl-layout__header--transparent">
+      <div class="mdl-layout__header-row">
+        <!-- Title -->
+        <span class="mdl-layout-title black-font tc-font">控制台</span>
+        <!-- Add spacer, to align navigation to the right -->
+        <div class="mdl-layout-spacer"></div>
+        <!-- Navigation -->
+        <nav class="mdl-navigation">
+          <a class="mdl-navigation__link" style="color:black" href="https://github.com/ljcucc">關於</a>
+          <a class="mdl-navigation__link" style="color:black" href="./index.html">計時器</a>
+        </nav>
+      </div>
+    </header>
+    <div class="mdl-layout__drawer tc-font">
+      <span class="mdl-layout-title">控制台</span>
+      <nav class="mdl-navigation">
+        <a class="mdl-navigation__link" href="https://github.com/ljcucc">關於</a>
+        <a class="mdl-navigation__link" href="./index.html">計時器</a>
+      </nav>
+    </div>
+    <main class="mdl-layout__content">
+      <div style="margin-top:50px"></div>
+      <!-- Body area -->
+      <div id="timerHeader">
+        <h2 style="text-align:center;">計時器</h2>
+        <div style="text-align:center;padding-top:50px;padding-bottom:100px;">
+          <!-- Primary-colored flat button -->
+          <!-- Icon button -->
+          <button class="mdl-button mdl-js-button mdl-button--icon" v-on:click="timerToggler" style="min-width:50px; min-height:50px; text-align:center;">
+            <i class="material-icons" style="font-size: 30px;">play_arrow</i>
+          </button>
+
+        </div>
+      </div>
+      <div class="mdl-grid portfolio-max-width">
+        <!-- Header block -->
+        <style>
+        .demo-card-square.mdl-card {
+          width: 500px;
+          height: 320px;
+        }
+        .demo-card-square > .mdl-card__title {
+          color: #fff;
+          background:
+            url('./assets/olav-ahrens-rotne-1102458-unsplash.jpg') center / cover no-repeat #46B6AC;
+        }
+        </style>
+          
+        <div class="mdl-cell portfolio-max-width demo-card-square mdl-card mdl-shadow--6dp md2-card">
+          <div class="mdl-card__title mdl-card--expand">
+            <h2 class="mdl-card__title-text">魔方計時器</h2>
+          </div>
+          <div class="mdl-card__supporting-text">
+            歡迎使用魔術方塊計時器，您可以直接開始使用這個計時器。
+            請每位學生的電腦，都到計時器頁面，並且檢查是否有錯誤訊息。
+            若無就可開始計時。<br>
+            
+          </div>
+          <div class="mdl-card__actions mdl-card--border">
+            <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" href="https://github.com/ljcucc">
+              關於作者
+            </a>
+            <i style="font-size:13px; color:rgba(0,0,0,.3);">
+              Powered by @ljcucc on Gtihub.
+            </i>
+          </div>
+        </div>
+
+        
+
+      </div>
+
+      <div class="mdl-grid portfolio-max-width">
+        <table style="width:500px;" class=" mdl-cell portfolio-max-width mdl-data-table mdl-data-table--selectable mdl-shadow--6dp md2-card-table">
+          <thead class="md2-card-table">
+            <tr>
+              <th class="mdl-data-table__cell--non-numeric">設備ID</th>
+              <th>秒數</th>
+              <th>狀態</th>
+            </tr>
+          </thead>
+          <tbody id="device_list">
+            <tr v-for="item in list">
+              <td class="mdl-data-table__cell--non-numeric" style="width:300px">{{item.id}}</td>
+              <td>{{item.time}}</td>
+              <td>{{item.status ? "已連線" :"--" }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <dialog class="mdl-dialog md2-card" id="openDialog">
+        <h4 class="mdl-dialog__title title">Allow data collection?</h4>
+        <div class="mdl-dialog__content">
+          <p class="description">
+            Allowing us to collect data will let us get you the information you want faster.
+          </p>
+        </div>
+        <div class="mdl-dialog__actions">
+          <button type="button" class="mdl-button close">關閉</button>
+        </div>
+      </dialog>
+      
+    </main>
+  </div>
+
+
+  
+</body>
+
+<script src="src/dashboard.js"></script>
+
+</html>
