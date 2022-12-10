@@ -9,7 +9,7 @@
   "author": "ljcucc@github.com",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.16.4",
+    "express": "^4.17.3",
     "open": "^6.3.0",
     "socket.io": "^2.2.0"
   }
